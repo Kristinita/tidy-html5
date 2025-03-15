@@ -1,0 +1,43 @@
+after_build:
+- dir "C:\Program Files (x86)\tidy\bin"
+- '"C:\Program Files (x86)\tidy\bin\tidy" --version'
+
+before_build:
+- cmake --version
+- python --version
+- ver
+
+build_script:
+
+# [INFO] Build the Tidy library and command-line tool for Windows:
+# https://github.com/htacg/tidy-html5/blob/next/README/BUILD.md#windows
+- cd build/cmake
+
+# [INFO] cmake is pre-installed on AppVeyor on virtual machines with the build worker image Visual Studio 2022:
+# https://www.appveyor.com/docs/windows-images-software/#tools
+- cmake ../.. -DCMAKE_BUILD_TYPE=Release
+- cmake --build . --config Release
+- cmake --build . --config Release --target INSTALL
+
+clone_depth: 1
+
+environment:
+
+  # [INFO] Encrypted “TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT” environment variable —
+  # GitHub token with the scope “public_repo”
+  TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT:
+    secure: 3evurgj4Op4YlN+flWPc28Z7POqMG83Zin0rLnn+Cwr7wlWHWR2TMqhBSLpMzonp
+
+image: Visual Studio 2022
+
+install:
+- pip install githubrelease
+
+on_success:
+
+# [INFO] I use the Python package “githubrelease” for creating and managing GitHub releases:
+# https://github.com/scikit-build/github-release
+- githubrelease --github-token %TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT%
+  asset Kristinita/tidy-html5 upload 5.9.20 "C:\Program Files (x86)\tidy\bin\tidy.exe"
+
+platform: x64

@@ -1,0 +1,51 @@
+after_success:
+- ls /usr/local/bin
+- tidy --version
+
+# [INFO] I use the Python package “githubrelease” for creating and managing GitHub releases:
+# https://github.com/scikit-build/github-release
+- githubrelease --github-token $TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT release Kristinita/tidy-html5
+  create 5.9.20 /usr/local/bin/tidy --name "Unofficial HTML Tidy 5.9.20 release" --publish
+
+before_script:
+- cmake --version
+- lsb_release --all
+- make --version
+- python --version
+
+dist: jammy
+
+env:
+  global:
+
+  # [INFO] Encrypted “TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT” environment variable —
+  # GitHub token with the scope “public_repo”
+  - secure: j9J71zApjPoIZ6f+kyulXGigKykpxbQw6xMrR/uWMuVRo2WPQqs5QP2/dM0ilm8JYTbPLk3rMbDoSp6Z+6B7joeopLi9YCIx4KQuQNUBqfc3d0R5rA2ybjIaWTFQV9UcjvnlzvKCqDLvzPR4oW+yybb1ggJmsniJcl9Nl5oaMkEUOmmXwGpGoEhFXvc4wQYLP1UrBQ1ktvRS4GClIaAiIVdTRVuq3ARElrGbZDKjnoMy/4Re1tSd33xDEALZrv1muyKKty92NRA7IrJNwmv+St2FqVUlZQhERlizq0uW8eCj+57LruSwhxMZz8+JQKsWjz6olFLfimblGhZJaOKu9h5RP17cETvUD9GrU8Y2JrUtjK7yRbLw80NS0Lfju8s9prt8OT0BidXJVc6nv7smc711qBGEZw9jGeh7OO8V8yYCv9h1hlMJARkm0F2DLmPvctzmLMwJe9pyZfkHh6LMp9usauWwJAy1IOU7tMuYY7FsffIAvQu66dTeygegNRuixZVzZfbB7Qx4Ce/Ah6AM5HC43/Ph9CLNvgp0DUk8/B/HM8hc2wknV/7JtQXbN9gF1RXXpJAIPjt1K3KTKJB2OseLnUmhI9BFEV9rriReIWEy1V1LtP60n1O7IfKch4YNQ+Ae6+V7njTeyhMHpfCepHvOAkgV9JVUcFkJd3FmcTs=
+
+git:
+  depth: 1
+
+install:
+- pip install githubrelease
+
+language: python
+
+os: linux
+
+python: 3.13
+
+script:
+
+# [INFO] Build the Tidy library and command-line tool for macOS/Linux/UNIX:
+# https://github.com/htacg/tidy-html5/blob/next/README/BUILD.md#macoslinuxunix
+- sudo apt-get install xsltproc
+
+# [INFO] cmake is pre-installed on the Ubuntu 22.04 (Jammy Jellyfish) Build Environment on Travis CI:
+# https://docs.travis-ci.com/user/reference/jammy/#compilers-and-build-toolchain
+- cd build/cmake
+- cmake ../.. -DCMAKE_BUILD_TYPE=Release
+
+# [INFO] “Because Make comes bundled with the Unix operating system, there is no need to install it”:
+# https://earthly.dev/blog/cmake-vs-make-diff/#installing-cmake-and-make
+- make
+- sudo make install
