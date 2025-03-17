@@ -4,8 +4,8 @@ after_success:
 
 # [INFO] I use the Python package “githubrelease” for creating and managing GitHub releases:
 # https://github.com/scikit-build/github-release
-- githubrelease --github-token $TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT release Kristinita/tidy-html5
-  create 5.9.20 /usr/local/bin/tidy --name "Unofficial HTML Tidy 5.9.20 release" --publish
+# - githubrelease --github-token $TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT release Kristinita/tidy-html5
+#   create 5.9.20 /usr/local/bin/tidy --name "Unofficial HTML Tidy 5.9.20 release" --publish
 
 before_script:
 - cmake --version
@@ -26,7 +26,8 @@ git:
   depth: 1
 
 install:
-- pip install githubrelease
+# - pip install githubrelease
+- sudo apt-get install xsltproc
 
 language: python
 
@@ -38,8 +39,7 @@ script:
 
 # [INFO] Build the Tidy library and command-line tool for macOS/Linux/UNIX:
 # https://github.com/htacg/tidy-html5/blob/next/README/BUILD.md#macoslinuxunix
-- sudo apt-get install xsltproc
-
+#
 # [INFO] cmake is pre-installed on the Ubuntu 22.04 (Jammy Jellyfish) Build Environment on Travis CI:
 # https://docs.travis-ci.com/user/reference/jammy/#compilers-and-build-toolchain
 - cd build/cmake

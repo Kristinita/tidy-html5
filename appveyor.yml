@@ -30,14 +30,14 @@ environment:
 
 image: Visual Studio 2022
 
-install:
-- pip install githubrelease
+# install:
+# - pip install githubrelease
 
-on_success:
+# on_success:
 
 # [INFO] I use the Python package “githubrelease” for creating and managing GitHub releases:
 # https://github.com/scikit-build/github-release
-- githubrelease --github-token %TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT%
-  asset Kristinita/tidy-html5 upload 5.9.20 "C:\Program Files (x86)\tidy\bin\tidy.exe"
+# - githubrelease --github-token %TOKEN_CI_FOR_GITHUB_RELEASES_DEPLOYMENT%
+#   asset Kristinita/tidy-html5 upload 5.9.20 "C:\Program Files (x86)\tidy\bin\tidy.exe"
 
 platform: x64
